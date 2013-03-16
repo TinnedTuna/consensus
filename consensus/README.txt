@@ -1,4 +1,4 @@
-voting README
+consensus README
 ==================
 
 Getting Started
@@ -8,7 +8,7 @@ Getting Started
 
 - $venv/bin/python setup.py develop
 
-- $venv/bin/initialize_voting_db development.ini
+- $venv/bin/initialize_consensus_db development.ini
 
 - $venv/bin/pserve development.ini
 

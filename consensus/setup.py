@@ -16,9 +16,9 @@ requires = [
     'waitress',
     ]
 
-setup(name='voting',
+setup(name='consensus',
       version='0.0',
-      description='voting',
+      description='consensus',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
@@ -33,12 +33,12 @@ setup(name='voting',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='voting',
+      test_suite='consensus',
       install_requires=requires,
       entry_points="""\
       [paste.app_factory]
-      main = voting:main
+      main = consensus:main
       [console_scripts]
-      initialize_voting_db = voting.scripts.initializedb:main
+      initialize_consensus_db = consensus.scripts.initializedb:main
       """,
       )

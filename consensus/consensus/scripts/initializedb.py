@@ -1,6 +1,7 @@
 import os
 import sys
 import transaction
+import uuid
 
 from sqlalchemy import engine_from_config
 
@@ -11,7 +12,7 @@ from pyramid.paster import (
 
 from ..models import (
     DBSession,
-    MyModel,
+    User,
     Base,
     )
 
@@ -33,5 +34,5 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = MyModel(name='one', value=1)
+        model = User(uuid.uuid4(),'Tinned_Tuna','mypass','mysalt') 
         DBSession.add(model)
