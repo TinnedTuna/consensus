@@ -23,9 +23,15 @@ elections, some features for the future:
     method which is custom to your organisation (some coding to a published 
     interface required ;-) )
 
-  * Easy to install and administer on most platforms (*BSD, Linux, OS X and 
+  * Easy to install and administer on most platforms (\*BSD, Linux, OS X and 
     Windows will hopefully be supported).
     
+Limitations
+-----------
+
+Currently, consensus does not support secure voting (in the academic sense). 
+Elections are not anonymous, and currently they are suceptible to tampering by
+whoever administers the consesus system.
 
 Getting Started
 ---------------
