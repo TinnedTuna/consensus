@@ -4,6 +4,8 @@ import uuid
 
 from pyramid import testing
 
+from webob.multidict import MultiDict
+
 from .models import DBSession
 
 from .views import auth
@@ -29,13 +31,15 @@ class TestUser(unittest.TestCase):
 
     def test_no_auth(self):
         request = testing.DummyRequest()
+        request.POST = MultiDict()
         info = auth(request)
         self.assertEqual(info['authentication'], False)
 
     def test_auth_actual(self):
         request = testing.DummyRequest()
-        request.matchdict['username'] = 'TestUser'
-        request.matchdict['password'] = 'TestPass'
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
         response = auth(request)
         self.assertEqual(response['username'], 'TestUser')
         self.assertEqual(response['password'], 'TestPass')

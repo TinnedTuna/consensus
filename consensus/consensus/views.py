@@ -13,12 +13,18 @@ def login(request):
 
 @view_config(route_name="auth", renderer='templates/auth.pt')
 def auth(request):
+  bad_response = { 'authenticated' : False, \
+                   'username' : None, \
+                   'password' : None }
   try: 
     authenticated = request.session['authenticated']
   except KeyError:
-    authenticated = False;
-  username = request.POST.getone('username')
-  password = request.POST.getone('password')
+    return bad_response
+  try:
+    username = request.POST.getone('username')
+    password = request.POST.getone('password')
+  except KeyError:
+    return bad_response
   return {'authentication':authenticated, \
           'username' : username, \
           'password' : password}
