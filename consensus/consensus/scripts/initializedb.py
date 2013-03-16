@@ -13,6 +13,7 @@ from pyramid.paster import (
 from ..models import (
     DBSession,
     User,
+    Role,
     Base,
     )
 
@@ -35,4 +36,8 @@ def main(argv=sys.argv):
     Base.metadata.create_all(engine)
     with transaction.manager:
         model = User(uuid.uuid4(),'Tinned_Tuna','mypass','mysalt') 
+        role = Role("ROLE_USER","The most basic role anyone can have")
+        anon_role = Role("ROLE_ANON","Any unauthenticated user.")
         DBSession.add(model)
+        DBSession.add(role)
+        DBSession.add(role_anon)

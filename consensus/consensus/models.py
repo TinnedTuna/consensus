@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
+    relationship,
     )
 
 from sqlalchemy.types import (
@@ -23,16 +24,6 @@ import uuid
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
-
-class MyModel(Base):
-    __tablename__ = 'models'
-    id = Column(Integer, primary_key=True)
-    name = Column(Text, unique=True)
-    value = Column(Integer)
-
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
 
 class UUID(TypeDecorator):
   impl = Binary
@@ -60,11 +51,22 @@ class User(Base):
   username = Column(Text, unique=True)
   password = Column(Text)
   salt = Column(Text)
-  
+ 
+  # Many to Many relationship to roles. 
+  roles = relationship('Role', secondary='user_roles',  backref='users')
+
   def __init__(self, id, username, password, salt):
     self.id = id
     self.username = username
     self.password = password
     self.salt = salt
   
+class Role(Base):
+  __tablename__ = "roles"
+  alias=Column(Text, primary_key=True)
+  description=Column(Text)
+
+  def __init__(self, alias, description=None):
+    self.alias = alias
+    self.description = description
 
