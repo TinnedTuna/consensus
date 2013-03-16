@@ -5,18 +5,15 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
-    MyModel,
     )
 
+@view_config(route_name='home', renderer='templates/login.pt')
+def login(request):
+  return {}
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
-    try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'consensus'}
-
+#@view_config(route_name='authenticate' renderer='templaters/auth.py')
+#def authenticate(request):
+#  username = request.
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:

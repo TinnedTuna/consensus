@@ -1,7 +1,9 @@
 from sqlalchemy import (
     Column,
+    ForeignKey,
     Integer,
     Text,
+    Table,
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -45,6 +47,19 @@ class UUID(TypeDecorator):
     else:
       return None
 
+class Role(Base):
+  __tablename__ = "roles"
+  alias=Column(Text, primary_key=True)
+  description=Column(Text)
+
+  def __init__(self, alias, description=None):
+    self.alias = alias
+    self.description = description
+
+user_roles = Table('user_roles', Base.metadata,
+  Column('user_id', Binary, ForeignKey('users.id')),
+  Column('role_alias', Text, ForeignKey('roles.alias')))
+
 class User(Base):
   __tablename__ = "users"
   id = Column(UUID, primary_key = True, default=uuid.uuid4)
@@ -61,12 +76,4 @@ class User(Base):
     self.password = password
     self.salt = salt
   
-class Role(Base):
-  __tablename__ = "roles"
-  alias=Column(Text, primary_key=True)
-  description=Column(Text)
-
-  def __init__(self, alias, description=None):
-    self.alias = alias
-    self.description = description
 
