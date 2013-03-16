@@ -11,6 +11,19 @@ from .models import (
 def login(request):
   return {}
 
+@view_config(route_name="auth", renderer='templates/auth.pt')
+def auth(request):
+  try: 
+    authenticated = request.session['authenticated']
+  except KeyError:
+    authenticated = False;
+  username = request.POST.getone('username')
+  password = request.POST.getone('password')
+  return {'authentication':authenticated, \
+          'username' : username, \
+          'password' : password}
+  
+
 #@view_config(route_name='authenticate' renderer='templaters/auth.py')
 #def authenticate(request):
 #  username = request.
