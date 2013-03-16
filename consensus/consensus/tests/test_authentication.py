@@ -6,16 +6,16 @@ from pyramid import testing
 
 from webob.multidict import MultiDict
 
-from .models import DBSession
+from consensus.models import DBSession
 
-from .views import auth
+from consensus.views import auth
 
 class TestAuthentication(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
-        from .models import (
+        from consensus.models import (
             Base,
             User,
             )
