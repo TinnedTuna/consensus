@@ -10,7 +10,7 @@ from .models import DBSession
 
 from .views import auth
 
-class TestUser(unittest.TestCase):
+class TestAuthentication(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         from sqlalchemy import create_engine
