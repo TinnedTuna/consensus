@@ -53,6 +53,23 @@ class TestAuthentication(unittest.TestCase):
         auth_token = AuthenticationStrategy().authenticate(request)
         self.assertTrue(auth_token.is_authenticated())
 
+    def test_auth_strategy_bad_pass(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'BadPass'
+        with self.assertRaises(AuthenticationError):
+            AuthenticationStrategy().authenticate(request)
+
+    def test_auth_strategy_bad_pass(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'BadUser'
+        request.POST['password'] = 'TestPass'
+        with self.assertRaises(AuthenticationError):
+            AuthenticationStrategy().authenticate(request)
+
+
     def test_no_auth(self):
         request = testing.DummyRequest()
         request.POST = MultiDict()
