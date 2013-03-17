@@ -5,7 +5,7 @@ Overview
 --------
 
 ''consensus'' is a web application designed to help organisations hold polls 
-and elections to find a consensus amongst it's stakeholders.
+and elections to find a consensus amongst its stakeholders.
 
 This project is in it's very early stages.
 
