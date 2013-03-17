@@ -67,8 +67,10 @@ class TestElection(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
-        self.assertTrue(request.session['authentication'].is_authenticated())
+        auth_session = request.session
+        self.assertTrue(auth_session['authentication'].is_authenticated())
         request = testing.DummyRequest() 
+        request.session = auth_session
         request.POST = MultiDict()
         request.POST['name'] = 'Test'
         request.POST['body'] = 'An election for testing.'
