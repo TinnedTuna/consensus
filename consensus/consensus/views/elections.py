@@ -21,6 +21,8 @@ from consensus.models import (
     DBSession,
     User,
     Role,
+    Method,
+    Election,
     )
 
 from consensus.authentication import (
@@ -36,6 +38,19 @@ def create_election(request):
         auth_token = request.session['authentication']
     except KeyError:
         return HTTPForbidden()
+    try:
+        election_name = request.POST.getone('name')
+        election_desc = request.POST.getone('body')
+        method = request.POST.getone('method')
+    except KeyError:
+        return HTTPBadRequest()
+    read_method = DBSession.query(Method).filter_by(python_name=method).first()
+    if (read_method is None):
+        return HTTPBadRequest()
+    election = Election(election_name, election_desc, read_method)
+    with transaction.manager:
+        DBSession.add(election)
+    return HTTPFound()
         
 
 
