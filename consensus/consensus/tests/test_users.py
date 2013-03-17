@@ -12,7 +12,7 @@ from consensus.models import (
     User,
     )
 
-from consensus.views import (
+from consensus.views.user import (
     signup,
     auth,
     )

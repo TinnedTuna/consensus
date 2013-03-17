@@ -14,7 +14,7 @@ from consensus.models import (
     User,
     )
 
-from consensus.views import auth
+from consensus.views.user import auth
 
 from consensus.authentication import (
     AuthenticationError,
