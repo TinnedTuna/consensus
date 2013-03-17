@@ -22,6 +22,7 @@ from consensus.views.user import (
 
 from consensus.views.elections import (
     create_election,
+    view_all_elections,
     )
 
 from consensus.authentication import (
@@ -77,3 +78,30 @@ class TestElection(unittest.TestCase):
         request.POST['method'] = 'TestMethod'
         response = create_election(request)
         self.assertEqual(response.status_int, 302)
+
+   
+    def test_view_elections(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
+        response = auth(request)
+        auth_session = request.session
+        self.assertTrue(auth_session['authentication'].is_authenticated())
+        request = testing.DummyRequest() 
+        request.session = auth_session
+        request.POST = MultiDict()
+        request.POST['name'] = 'Test'
+        request.POST['body'] = 'An election for testing.'
+        request.POST['method'] = 'TestMethod'
+        response = create_election(request)
+        self.assertEqual(response.status_int, 302)
+        request = testing.DummyRequest() 
+        request.session = auth_session
+        request.POST = MultiDict()
+        request.POST['name'] = 'Test'
+        response = view_all_elections(request)
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response['name'], 'Test')
+        self.assertEqual(response['body'], 'An election for testing.')
+        self.assertEqual(response['method'], 'TestMethod')
