@@ -1,6 +1,11 @@
 from pyramid.response import Response
+
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPUnauthorized
+
+from pyramid.httpexceptions import (
+    HTTPUnauthorized,
+    HTTPOk,
+    )
 
 from sqlalchemy.exc import DBAPIError
 
@@ -10,7 +15,8 @@ from .models import (
 
 from authentication import (
     AuthenticationStrategy,
-    AuthenticationError
+    AuthenticationError,
+    Authentication,
     )
 
 @view_config(route_name='home', renderer='templates/login.pt')
@@ -21,11 +27,12 @@ def login(request):
 def auth(request):
     try:
         auth_token = AuthenticationStrategy().authenticate(request)
+        request.session['authentication'] = auth_token
     except AuthenticationError:
+        request.session['authentication'] = Authentication(None, None)
         return HTTPUnauthorized()
     if (auth_token.is_authenticated()):
-        return {'authenticated' : True, \
-                'username' : request.username} 
+        return HTTPOk()
 
 #@view_config(route_name='authenticate' renderer='templaters/auth.py')
 #def authenticate(request):

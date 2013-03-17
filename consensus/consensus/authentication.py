@@ -13,21 +13,19 @@ class AuthenticationError():
 """
 class Authentication():
     roles = set()
-    username = None
+    user = None
   
-    def __init__(self, username, roles):
-        self.username = username
+    def __init__(self, user, roles):
+        self.user = user
         if (len(self.roles) == 0):
             self.roles.add(Role('ROLE_ANON'))
         else:
             self.roles = roles
 
     def is_authenticated(self):
-        if (not (self.username is None or self.roles is None or len(self.roles) < 1)):
-            print('In the true of the if clause...')
+        if (not (self.user is None or self.roles is None or len(self.roles) < 1)):
             return self.roles != list().append(Role('ROLE_ANON'))
         else:
-            print('Returning False.')
             return False
             
 

@@ -4,6 +4,8 @@ import uuid
 
 from pyramid import testing
 
+from pyramid.httpexceptions import HTTPOk
+
 from webob.multidict import MultiDict
 
 from consensus.models import (
@@ -54,8 +56,8 @@ class TestAuthentication(unittest.TestCase):
     def test_no_auth(self):
         request = testing.DummyRequest()
         request.POST = MultiDict()
-        info = auth(request)
-        self.assertEqual(info['authentication'], False)
+        response = auth(request)
+        self.assertEqual(response.status_int, 401)
 
     def test_auth_actual(self):
         request = testing.DummyRequest()
@@ -63,6 +65,7 @@ class TestAuthentication(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
-        self.assertEqual(response['username'], 'TestUser')
-        self.assertEqual(response['password'], 'TestPass')
-        self.assertEqual(response['authentication'], True)
+        self.assertEqual(response.status_int, 200)
+        auth_token = request.session['authentication']
+        self.assertEqual(auth_token.user.username, 'TestUser')
+        self.assertTrue(auth_token.is_authenticated())
