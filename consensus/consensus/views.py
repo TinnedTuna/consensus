@@ -1,3 +1,5 @@
+import transaction 
+
 from pyramid.response import Response
 
 from pyramid.view import view_config
@@ -8,7 +10,10 @@ from pyramid.httpexceptions import (
     HTTPOk,
     )
 
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import (
+    DBAPIError,
+    IntegrityError
+    )
 
 from .models import (
     DBSession,
@@ -46,8 +51,13 @@ def signup(request):
         return HTTPBadRequest()
     new_user = User(username,password,"salt")
     role_user = DBSession.query(Role).filter_by(alias='ROLE_USER').first()
-    DBSession.add(new_user)
-    new_user.roles.append(role_user)
+    try:
+        with transaction.manager:
+             DBSession.add(new_user)
+             user = DBSession.query(User).filter_by(username=username).first()
+             user.roles.append(role_user)
+    except IntegrityError:
+        return HTTPBadRequest()
     return HTTPOk()
     
     

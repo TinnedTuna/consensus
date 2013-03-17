@@ -53,6 +53,6 @@ class TestUsers(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
-        self.assertEqual(response.status_int, 401)
+        self.assertEqual(response.status_int, 400)
  
  
