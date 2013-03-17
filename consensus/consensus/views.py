@@ -3,6 +3,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from pyramid.httpexceptions import (
+    HTTPBadRequest,
     HTTPUnauthorized,
     HTTPOk,
     )
@@ -11,6 +12,8 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
+    User,
+    Role,
     )
 
 from authentication import (
@@ -23,7 +26,7 @@ from authentication import (
 def login(request):
     return {}
 
-@view_config(route_name="auth", renderer='templates/auth.pt')
+@view_config(route_name='auth', renderer='templates/auth.pt')
 def auth(request):
     try:
         auth_token = AuthenticationStrategy().authenticate(request)
@@ -34,9 +37,22 @@ def auth(request):
     if (auth_token.is_authenticated()):
         return HTTPOk()
 
-#@view_config(route_name='authenticate' renderer='templaters/auth.py')
-#def authenticate(request):
-#  username = request.
+@view_config(route_name='signup', renderer='templates/signup.pt')
+def signup(request):
+    try:
+        username = request.POST.getone('username')
+        password = request.POST.getone('password')
+    except KeyError: 
+        return HTTPBadRequest()
+    new_user = User(username,password,"salt")
+    role_user = DBSession.query(Role).filter_by(alias='ROLE_USER').first()
+    DBSession.add(new_user)
+    new_user.roles.append(role_user)
+    return HTTPOk()
+    
+    
+    
+        
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:

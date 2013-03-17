@@ -39,7 +39,7 @@ class TestAuthentication(unittest.TestCase):
             role = Role('ROLE_USER', 'The default role for all users.')
             DBSession.add(role)
             model.roles.append(DBSession.query(Role).filter_by(alias='ROLE_USER').first())
-            #DBSession.add(model)
+            DBSession.add(model)
 
     def tearDown(self):
         DBSession.remove()

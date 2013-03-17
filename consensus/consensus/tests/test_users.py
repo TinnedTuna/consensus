@@ -17,7 +17,6 @@ from consensus.views import signup
 class TestUsers(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        self.auth_strategy = AuthenticationStrategy()
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
         from consensus.models import (
