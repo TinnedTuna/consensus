@@ -44,7 +44,9 @@ class AuthenticationStrategy():
             raise AuthenticationError()
 
         user = DBSession.query(User).filter_by(username=supplied_username).first()        
+        if (user is None):
+            raise AuthenticationError()
         if (user.password == password):
-          return Authentication(user,user.roles)  
+            return Authentication(user,user.roles)  
         else:
-          raise AuthenticationError()
+            raise AuthenticationError()

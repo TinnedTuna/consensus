@@ -86,3 +86,15 @@ class TestAuthentication(unittest.TestCase):
         auth_token = request.session['authentication']
         self.assertEqual(auth_token.user.username, 'TestUser')
         self.assertTrue(auth_token.is_authenticated())
+
+
+    def test_auth_view_bad_pass(self):
+        request = testing.DummyRequest()
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'BadPass'
+        response = auth(request)
+        self.assertEqual(response.status_int, 401)
+        auth_token = request.session['authentication']
+        #self.assertEqual(auth_token.user.username, 'TestUser')
+        self.assertFalse(auth_token.is_authenticated())
