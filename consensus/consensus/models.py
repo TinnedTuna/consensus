@@ -14,6 +14,10 @@ from sqlalchemy.orm import (
     relationship,
     )
 
+from sqlalchemy.schema import (
+    UniqueConstraint,
+    )
+
 from sqlalchemy.types import (
     Binary,
     TypeDecorator
@@ -60,9 +64,6 @@ class Role(Base):
         else:
             return (other.alias == self.alias)
 
-    def __repr__(self):
-        return self.alias
-
 """An association table so that each user may have many roles.
 """
 user_roles = Table('user_roles', Base.metadata,
@@ -91,6 +92,62 @@ class User(Base):
         else:
             return (other.id == self.id)
 
-    def __repr__(self):
-        #return 'User: {username : %s}', self.username
-        return self.username
+"""Represents a method of holding an election, e.g. FPTP, STV, AV, etc.
+"""
+class Method(Base):
+    __tablename__ = "methods"
+    python_name = Column(Text, primary_key = True)
+    name = Column(Text)
+    description = Column(Text)
+
+    def __init__(self, python_name, name, description):
+        self.python_name = python_name
+        self.name = name
+        self.description = description
+
+    def __eq__(self, other):
+        if (other is None):
+            return False 
+        else:
+            return (self.python_name == other.python_name)
+
+"""Represents a ballot on an election.
+"""
+class Ballot(Base):
+    __tablename__ = "ballots"
+    id = Column(UUID, primary_key = True, default=uuid.uuid4)
+    user_id = Column(UUID, ForeignKey('users.id'))
+    user = relationship("User")
+    election_id = Column(UUID, ForeignKey('elections.id'))
+    election = relationship("Election")
+    ballot = Column(Text)
+
+    __table_args__ = (
+        UniqueConstraint('user_id','election_id'),
+    )
+
+    def __init__(self, user, election, ballot):
+        self.user = user
+        self.election = election
+        self.ballot = ballot
+
+"""Represents an election in the system.
+"""
+class Election(Base):
+    __tablename__ = "elections"
+    id = Column(UUID, primary_key = True, default=uuid.uuid4)
+    name = Column(Text, unique=True)
+    body = Column(Text)
+    method_id = Column(Text, ForeignKey('methods.python_name'))
+    method = relationship("Method")
+
+    def __init__(self, name, body, method):
+      self.name = name
+      self.body = body
+      self.method = method
+
+    def __eq__(self, other):
+        if (other is None):
+            return False
+        else:
+            return (other.id == self.id)
