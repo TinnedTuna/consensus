@@ -41,3 +41,18 @@ class TestUsers(unittest.TestCase):
         response = signup(request)
         self.assertEqual(response.status_int, 200)
         
+    def test_duplicate_user_signup(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
+        response = signup(request)
+        self.assertEqual(response.status_int, 200)
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
+        response = signup(request)
+        self.assertEqual(response.status_int, 401)
+ 
+ 
