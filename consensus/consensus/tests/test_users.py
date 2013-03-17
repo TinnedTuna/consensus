@@ -12,7 +12,10 @@ from consensus.models import (
     User,
     )
 
-from consensus.views import signup 
+from consensus.views import (
+    signup,
+    auth,
+    )
 
 class TestUsers(unittest.TestCase):
     def setUp(self):
@@ -55,4 +58,18 @@ class TestUsers(unittest.TestCase):
         response = signup(request)
         self.assertEqual(response.status_int, 400)
  
- 
+    def test_user_signup_and_auth(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
+        response = signup(request)
+        self.assertEqual(response.status_int, 200)
+        request = testing.DummyRequest()
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        request.POST['password'] = 'TestPass'
+        response = auth(request)
+        self.assertEqual(response.status_int, 200)
+        auth_token = request.session['authentication']
+        self.assertTrue(auth_token.is_authenticated()) 
