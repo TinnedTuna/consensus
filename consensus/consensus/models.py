@@ -80,8 +80,7 @@ class User(Base):
     # Many to Many relationship to roles. 
     roles = relationship('Role', secondary='user_roles',  backref='users')
 
-    def __init__(self, id, username, password, salt):
-        self.id = id
+    def __init__(self, username, password, salt):
         self.username = username
         self.password = password
         self.salt = salt

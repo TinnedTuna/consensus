@@ -35,7 +35,7 @@ class TestAuthentication(unittest.TestCase):
         DBSession.configure(bind=engine)
         Base.metadata.create_all(engine)
         with transaction.manager:
-            model = User(uuid.uuid4(), 'TestUser','TestPass','TestSalt')
+            model = User('TestUser','TestPass','TestSalt')
             role = Role('ROLE_USER', 'The default role for all users.')
             DBSession.add(role)
             model.roles.append(DBSession.query(Role).filter_by(alias='ROLE_USER').first())
