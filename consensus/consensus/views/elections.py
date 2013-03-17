@@ -53,28 +53,14 @@ def create_election(request):
     return HTTPFound()
         
 
-
-@view_config(route_name='signup', renderer='templates/signup.pt')
-def signup(request):
+@view_config(route_name='view_all_elections', renderer='templates/all_elections.py')
+def view_all_elections(request):
     try:
-        username = request.POST.getone('username')
-        password = request.POST.getone('password')
-    except KeyError: 
-        return HTTPBadRequest()
-    new_user = User(username,password,"salt")
-    role_user = DBSession.query(Role).filter_by(alias='ROLE_USER').first()
-    try:
-        with transaction.manager:
-             DBSession.add(new_user)
-             user = DBSession.query(User).filter_by(username=username).first()
-             user.roles.append(role_user)
-    except IntegrityError:
-        return HTTPBadRequest()
-    return HTTPOk()
+        auth_token = request.session['authentication']
+    except KeyError:
+        return HTTPForbidden()
     
-    
-    
-        
+       
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:
