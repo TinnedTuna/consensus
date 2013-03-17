@@ -1,5 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPUnauthorized
 
 from sqlalchemy.exc import DBAPIError
 
@@ -7,28 +8,24 @@ from .models import (
     DBSession,
     )
 
+from authentication import (
+    AuthenticationStrategy,
+    AuthenticationError
+    )
+
 @view_config(route_name='home', renderer='templates/login.pt')
 def login(request):
-  return {}
+    return {}
 
 @view_config(route_name="auth", renderer='templates/auth.pt')
 def auth(request):
-  bad_response = { 'authenticated' : False, \
-                   'username' : None, \
-                   'password' : None }
-  try: 
-    authenticated = request.session['authenticated']
-  except KeyError:
-    return bad_response
-  try:
-    username = request.POST.getone('username')
-    password = request.POST.getone('password')
-  except KeyError:
-    return bad_response
-  return {'authentication':authenticated, \
-          'username' : username, \
-          'password' : password}
-  
+    try:
+        auth_token = AuthenticationStrategy().authenticate(request)
+    except AuthenticationError:
+        return HTTPUnauthorized()
+    if (auth_token.is_authenticated()):
+        return {'authenticated' : True, \
+                'username' : request.username} 
 
 #@view_config(route_name='authenticate' renderer='templaters/auth.py')
 #def authenticate(request):
