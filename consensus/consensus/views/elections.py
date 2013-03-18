@@ -1,4 +1,5 @@
 import transaction 
+import json
 
 from pyramid.response import Response
 
@@ -59,8 +60,17 @@ def view_all_elections(request):
         auth_token = request.session['authentication']
     except KeyError:
         return HTTPForbidden()
-    
-       
+    elections = DBSession.query(Election).all()
+    result = {}
+    for election in elections:
+        result[election.name] = {'id'  : election.id.urn,   \
+                                 'name': election.name, \
+                                 'body': election.body, \
+                                 'method' : { 'name' :  election.method.name, \
+                                              'id' : election.id.urn }
+                                 }
+    return result
+
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:
