@@ -1,5 +1,6 @@
 import transaction 
 import json
+import uuid
 
 from pyramid.response import Response
 
@@ -32,13 +33,17 @@ from consensus.authentication import (
     Authentication,
     )
 
+def is_authenticated(request):
+    try:
+        auth_token = request.session['authentication']
+        return auth_token.is_authenticated()
+    except KeyError:
+        return False
 
 @view_config(route_name='create_election', renderer='templates/create_election.py')
 def create_election(request):
-    try:
-        auth_token = request.session['authentication']
-    except KeyError:
-        return HTTPForbidden()
+    if (not is_authenticated(request)):
+        return HTTPUnauthorized()
     try:
         election_name = request.POST.getone('name')
         election_desc = request.POST.getone('body')
@@ -56,21 +61,33 @@ def create_election(request):
 
 @view_config(route_name='view_all_elections', renderer='templates/all_elections.py')
 def view_all_elections(request):
-    try:
-        auth_token = request.session['authentication']
-    except KeyError:
-        return HTTPForbidden()
+    if (not is_authenticated(request)):
+        return HTTPUnauthorized()
     elections = DBSession.query(Election).all()
     result = {}
     for election in elections:
         result[election.name] = {'id'  : election.id.urn,   \
-                                 'name': election.name, \
-                                 'body': election.body, \
-                                 'method' : { 'name' :  election.method.name, \
-                                              'id' : election.id.urn }
-                                 }
+                                 'name': election.name \
+                                }
     return result
 
+@view_config(route_name='view_all_elections', renderer='templates/all_elections.py')
+def view_election(request):
+    if (not is_authenticated(request)):
+        return HTTPUnauthorized()
+    try:
+        election_id = uuid.UUID(request.matchdict['id'])
+    except KeyError, ValueError:
+        raise HTTPBadRequest()
+    
+    election = DBSession.query(Election).filter_by(id=election_id).first()
+    return { 'id' : election.id.urn, \
+             'name' : election.name, \
+             'body' : election.body, \
+             'method' : { 'name' : election.method.name, \
+                          'description' : election.method.description } }  
+
+    
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:
