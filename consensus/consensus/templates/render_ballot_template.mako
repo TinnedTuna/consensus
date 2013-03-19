@@ -1,3 +1,4 @@
+<%inherit file='base.mako'/>
 <div id='ballot'>
   <form>
   % for element in ballot_config['required']:

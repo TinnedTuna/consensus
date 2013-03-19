@@ -1,4 +1,4 @@
-<%inherit file='base.mako'>
+<%inherit file='base.mako'/>
 
   <div id='election_details'>
     <h2>${election['name']}</h2>
