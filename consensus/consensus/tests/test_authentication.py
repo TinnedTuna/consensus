@@ -61,6 +61,12 @@ class TestAuthentication(unittest.TestCase):
         with self.assertRaises(AuthenticationError):
             AuthenticationStrategy().authenticate(request)
 
+    def test_auth_strategy_no_pass(self):
+        request = testing.DummyRequest() 
+        request.POST = MultiDict()
+        request.POST['username'] = 'TestUser'
+        with self.assertRaises(AuthenticationError):
+            AuthenticationStrategy().authenticate(request)
     def test_auth_strategy_bad_pass(self):
         request = testing.DummyRequest() 
         request.POST = MultiDict()
