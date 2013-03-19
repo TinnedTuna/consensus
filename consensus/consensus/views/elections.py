@@ -71,7 +71,7 @@ def view_all_elections(request):
                                 }
     return result
 
-@view_config(route_name='view_all_elections', renderer='templates/all_elections.py')
+@view_config(route_name='view_election', renderer='templates/election.py')
 def view_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
