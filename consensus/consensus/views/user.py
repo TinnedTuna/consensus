@@ -44,7 +44,8 @@ def auth(request):
 
 @view_config(route_name='signup_form', renderer='signup_form.mako')
 def signup_form(request):
-    return { 'submit_url' : request.route_url('signup', request_method='POST') }
+    return { 'submit_url' : request.route_url('signup', request_method='POST'), \
+             'page_name' : 'Signup'}
 
 @view_config(route_name='signup', renderer='templates/signup.pt')
 def signup(request):
