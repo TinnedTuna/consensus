@@ -8,6 +8,7 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPUnauthorized,
     HTTPOk,
+    HTTPFound,
     )
 
 from sqlalchemy.exc import (
@@ -29,7 +30,8 @@ from consensus.authentication import (
 
 @view_config(route_name='login', renderer='login.mako')
 def login(request):
-    return {}
+    return { 'page_name' : 'Login', \
+             'submit_url' : request.route_url('auth', request_method='POST') }
 
 @view_config(route_name='auth', renderer='auth.pt')
 def auth(request):
@@ -63,7 +65,7 @@ def signup(request):
              user.roles.append(role_user)
     except IntegrityError:
         return HTTPBadRequest()
-    return HTTPOk()
+    return HTTPFound(location=request.route_url('login'))
     
     
     
