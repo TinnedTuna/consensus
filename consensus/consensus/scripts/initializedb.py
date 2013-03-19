@@ -35,7 +35,7 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = User(uuid.uuid4(),'Tinned_Tuna','mypass','mysalt') 
+        model = User('Tinned_Tuna','mypass','mysalt') 
         role_user = Role("ROLE_USER","The most basic role anyone can have")
         role_anon = Role("ROLE_ANON","Any unauthenticated user.")
         DBSession.add(model)

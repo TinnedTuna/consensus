@@ -42,7 +42,7 @@ def auth(request):
         request.session['authentication'] = Authentication(None, None)
         return HTTPUnauthorized()
     if (auth_token.is_authenticated()):
-        return HTTPOk()
+        return HTTPFound(location=request.route_url('all_elections'))
 
 @view_config(route_name='signup_form', renderer='signup_form.mako')
 def signup_form(request):

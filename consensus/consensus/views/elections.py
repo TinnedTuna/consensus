@@ -59,19 +59,22 @@ def create_election(request):
     return HTTPFound()
         
 
-@view_config(route_name='view_all_elections', renderer='templates/all_elections.mako')
+@view_config(route_name='view_all_elections', renderer='all_elections.mako')
 def view_all_elections(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
     elections = DBSession.query(Election).all()
+    elections = {}
     result = {}
     for election in elections:
-        result[election.name] = {'id'  : election.id.urn,   \
+        elections[election.name] = {'view_url'  : request.route_url('view_election', id=election.id.urn), \
                                  'name': election.name \
                                 }
+    result['page_name'] = 'All Elections' 
+    result['elections'] = elections
     return result
 
-@view_config(route_name='view_election', renderer='templates/election.mako')
+@view_config(route_name='view_election', renderer='election.mako')
 def view_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
@@ -82,6 +85,7 @@ def view_election(request):
     
     election = DBSession.query(Election).filter_by(id=election_id).first()
     return { 'id' : election.id.urn, \
+             'page_name' : election.name, \
              'name' : election.name, \
              'body' : election.body, \
              'method' : { 'name' : election.method.name, \
