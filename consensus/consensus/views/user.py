@@ -27,7 +27,7 @@ from consensus.authentication import (
     Authentication,
     )
 
-@view_config(route_name='home', renderer='templates/login.pt')
+@view_config(route_name='login', renderer='templates/login.mako')
 def login(request):
     return {}
 
