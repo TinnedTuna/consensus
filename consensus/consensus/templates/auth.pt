@@ -1,8 +1,0 @@
-<html>
-  <head>
-    <title>Welcome to consensus</title>
-  </head>
-  <body>
-    <p>You're authentication status is: ${authentication}</p>
-  </body>
-</html>

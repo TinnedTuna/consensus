@@ -42,6 +42,10 @@ def auth(request):
     if (auth_token.is_authenticated()):
         return HTTPOk()
 
+@view_config(route_name='signup_form', renderer='templates/signup_form.mako')
+def signup_form(request):
+    return { 'submit_url' : request.route_url('signup', request_method='POST') }
+
 @view_config(route_name='signup', renderer='templates/signup.pt')
 def signup(request):
     try:

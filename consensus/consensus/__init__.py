@@ -22,6 +22,7 @@ def main(global_config, **settings):
     config.add_route('login', '/login', request_method='GET')
     config.add_route('auth', '/authenticate', request_method='POST')
     config.add_route('signup', '/signup', request_method='POST')
+    config.add_route('signup_form', '/signup', request_method='GET')
     config.add_route('create_election', '/create_election')
     config.add_route('view_all_elections','/elections')
     config.add_route('view_election','/election/{id}')
