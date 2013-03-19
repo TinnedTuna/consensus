@@ -27,11 +27,11 @@ from consensus.authentication import (
     Authentication,
     )
 
-@view_config(route_name='login', renderer='templates/login.mako')
+@view_config(route_name='login', renderer='login.mako')
 def login(request):
     return {}
 
-@view_config(route_name='auth', renderer='templates/auth.pt')
+@view_config(route_name='auth', renderer='auth.pt')
 def auth(request):
     try:
         auth_token = AuthenticationStrategy().authenticate(request)
@@ -42,7 +42,7 @@ def auth(request):
     if (auth_token.is_authenticated()):
         return HTTPOk()
 
-@view_config(route_name='signup_form', renderer='templates/signup_form.mako')
+@view_config(route_name='signup_form', renderer='signup_form.mako')
 def signup_form(request):
     return { 'submit_url' : request.route_url('signup', request_method='POST') }
 
