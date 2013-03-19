@@ -40,7 +40,7 @@ def is_authenticated(request):
     except KeyError:
         return False
 
-@view_config(route_name='create_election', renderer='templates/create_election.py')
+@view_config(route_name='create_election', renderer='templates/create_election.mako')
 def create_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
@@ -59,7 +59,7 @@ def create_election(request):
     return HTTPFound()
         
 
-@view_config(route_name='view_all_elections', renderer='templates/all_elections.py')
+@view_config(route_name='view_all_elections', renderer='templates/all_elections.mako')
 def view_all_elections(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
@@ -71,7 +71,7 @@ def view_all_elections(request):
                                 }
     return result
 
-@view_config(route_name='view_election', renderer='templates/election.py')
+@view_config(route_name='view_election', renderer='templates/election.mako')
 def view_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
