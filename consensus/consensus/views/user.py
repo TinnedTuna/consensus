@@ -42,14 +42,14 @@ def auth(request):
         request.session['authentication'] = Authentication(None, None)
         return HTTPUnauthorized()
     if (auth_token.is_authenticated()):
-        return HTTPFound(location=request.route_url('all_elections'))
+        return HTTPFound(location=request.route_url('view_all_elections'))
 
-@view_config(route_name='signup_form', renderer='signup_form.mako')
+@view_config(route_name='signup', renderer='signup_form.mako')
 def signup_form(request):
     return { 'submit_url' : request.route_url('signup', request_method='POST'), \
              'page_name' : 'Signup'}
 
-@view_config(route_name='signup', renderer='templates/signup.pt')
+@view_config(route_name='signupp', renderer='templates/signup.pt')
 def signup(request):
     try:
         username = request.POST.getone('username')
