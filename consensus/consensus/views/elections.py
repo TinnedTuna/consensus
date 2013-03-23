@@ -40,7 +40,7 @@ def is_authenticated(request):
     except KeyError:
         return False
 
-@view_config(route_name='create_election', renderer='templates/create_election.mako')
+@view_config(route_name='create_electionp', renderer='templates/create_election.mako')
 def create_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
@@ -55,9 +55,15 @@ def create_election(request):
         return HTTPBadRequest()
     election = Election(election_name, election_desc, read_method)
     with transaction.manager:
-        DBSession.add(election)
-    return HTTPFound()
+        id = DBSession.add(election)
+    print(id)
+    return HTTPFound(location=request.route_url('view_election', params={'id':id}))
         
+#@view_config(route_name='create_election', renderer='templates/create_election.mako')
+#def create_electionp(request):
+#    if (not is_authenticated(request)):
+#        return HTTPUnauthorized()
+    
 
 @view_config(route_name='view_all_elections', renderer='all_elections.mako')
 def view_all_elections(request):

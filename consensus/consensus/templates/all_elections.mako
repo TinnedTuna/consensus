@@ -1,4 +1,11 @@
 <%inherit file='base.mako'/>
 
 <h2>All Elections</h2>
-  % for election in  
+  <div class='elections'>
+  #% for election in ${elections}
+    <div class='election'>
+      ${elections}
+    </div>
+  #% endfor
+  </div>
+

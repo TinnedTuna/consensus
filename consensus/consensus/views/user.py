@@ -33,7 +33,7 @@ def login(request):
     return { 'page_name' : 'Login', \
              'submit_url' : request.route_url('auth', request_method='POST') }
 
-@view_config(route_name='auth', renderer='auth.pt')
+@view_config(route_name='auth', renderer='auth.mako')
 def auth(request):
     try:
         auth_token = AuthenticationStrategy().authenticate(request)
