@@ -6,6 +6,8 @@ from pyramid import testing
 
 from pyramid.httpexceptions import HTTPOk
 
+from pyramid.request import Request
+
 from webob.multidict import MultiDict
 
 from consensus.models import (
@@ -32,9 +34,22 @@ from consensus.authentication import (
     Authentication,
     )
 
+class RequestFactory():
+    """ Produces "real" request objects for testing.
+    """
+    def __init__(self, config):
+        self.config = config
+
+    def get_request(self):
+        request = Request.blank("http://www.example.com")
+        request.reqistry = self.config.registry
+        return request
+
+
 class TestElection(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        self.request_factory = RequestFactory(self.config)
         self.auth_strategy = AuthenticationStrategy()
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
@@ -58,22 +73,20 @@ class TestElection(unittest.TestCase):
         testing.tearDown()
 
     def test_create_election_no_auth(self):
-        request = testing.DummyRequest()
+        request = self.request_factory.get_request()
         response = create_election(request)
         self.assertEqual(response.status_int, 401)
         
 
     def test_create_election(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self.request_factory.get_request() 
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
         auth_session = request.session
         self.assertTrue(auth_session['authentication'].is_authenticated())
-        request = testing.DummyRequest() 
+        request = self.request_factory.get_request() 
         request.session = auth_session
-        request.POST = MultiDict()
         request.POST['name'] = 'Test'
         request.POST['body'] = 'An election for testing.'
         request.POST['method'] = 'TestMethod'
