@@ -59,21 +59,27 @@ class TestElection(unittest.TestCase):
         DBSession.remove()
         testing.tearDown()
 
-    def test_create_election_no_auth(self):
+
+    def _get_request(self):
         self.config.include('consensus.routes_setup')
-        request = testing.DummyRequest()
+        req = testing.DummyRequest()
+        req.POST = MultiDict()
+        return req
+
+    def test_create_election_no_auth(self):
+        request = self._get_request()
         response = create_election(request)
         self.assertEqual(response.status_int, 401)
         
 
     def test_create_election(self):
-        request = self.request_factory.get_request() 
+        request = self._get_request() 
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
         auth_session = request.session
         self.assertTrue(auth_session['authentication'].is_authenticated())
-        request = self.request_factory.get_request() 
+        request = self._get_request() 
         request.session = auth_session
         request.POST['name'] = 'Test'
         request.POST['body'] = 'An election for testing.'
