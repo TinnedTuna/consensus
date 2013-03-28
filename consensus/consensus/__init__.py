@@ -19,6 +19,12 @@ def main(global_config, **settings):
     config.include('pyramid_beaker')
     config.set_session_factory(session_factory)
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.include(routes_setup)
+    config.scan()
+    return config.make_wsgi_app()
+
+def routes_setup(config):
+    # Out here for unittest
     config.add_route('login', '/login', request_method='GET')
     config.add_route('auth', '/authenticate', request_method='POST')
     config.add_route('signupp', '/signup', request_method='POST')
@@ -27,5 +33,4 @@ def main(global_config, **settings):
     config.add_route('create_election', '/create_election', request_method='GET')
     config.add_route('view_all_elections','/elections')
     config.add_route('view_election','/election/{id}')
-    config.scan()
-    return config.make_wsgi_app()
+ 
