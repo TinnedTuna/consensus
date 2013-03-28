@@ -89,7 +89,7 @@ class TestAuthentication(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
         auth_token = request.session['authentication']
         self.assertEqual(auth_token.user.username, 'TestUser')
         self.assertTrue(auth_token.is_authenticated())
