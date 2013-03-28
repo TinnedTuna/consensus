@@ -45,31 +45,34 @@ class TestAuthentication(unittest.TestCase):
         DBSession.remove()
         testing.tearDown()
 
-    def test_auth_strategy(self):
-        request = testing.DummyRequest() 
+    def _get_request(self):
+        self.config.include('consensus.routes_setup')
+        request = testing.DummyRequest()
         request.POST = MultiDict()
+        return request
+
+    def test_auth_strategy(self):
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         auth_token = AuthenticationStrategy().authenticate(request)
         self.assertTrue(auth_token.is_authenticated())
 
     def test_auth_strategy_bad_pass(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'BadPass'
         with self.assertRaises(AuthenticationError):
             AuthenticationStrategy().authenticate(request)
 
     def test_auth_strategy_no_pass(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         with self.assertRaises(AuthenticationError):
             AuthenticationStrategy().authenticate(request)
+
     def test_auth_strategy_bad_pass(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'BadUser'
         request.POST['password'] = 'TestPass'
         with self.assertRaises(AuthenticationError):
@@ -77,14 +80,12 @@ class TestAuthentication(unittest.TestCase):
 
 
     def test_no_auth(self):
-        request = testing.DummyRequest()
-        request.POST = MultiDict()
+        request = self._get_request()
         response = auth(request)
         self.assertEqual(response.status_int, 401)
 
     def test_auth_actual(self):
-        request = testing.DummyRequest()
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
@@ -95,8 +96,7 @@ class TestAuthentication(unittest.TestCase):
 
 
     def test_auth_view_bad_pass(self):
-        request = testing.DummyRequest()
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'BadPass'
         response = auth(request)
