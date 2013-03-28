@@ -34,22 +34,9 @@ from consensus.authentication import (
     Authentication,
     )
 
-class RequestFactory():
-    """ Produces "real" request objects for testing.
-    """
-    def __init__(self, config):
-        self.config = config
-
-    def get_request(self):
-        request = Request.blank("http://www.example.com")
-        request.reqistry = self.config.registry
-        return request
-
-
 class TestElection(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        self.request_factory = RequestFactory(self.config)
         self.auth_strategy = AuthenticationStrategy()
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
@@ -73,7 +60,8 @@ class TestElection(unittest.TestCase):
         testing.tearDown()
 
     def test_create_election_no_auth(self):
-        request = self.request_factory.get_request()
+        self.config.include('consensus.routes_setup')
+        request = testing.DummyRequest()
         response = create_election(request)
         self.assertEqual(response.status_int, 401)
         
