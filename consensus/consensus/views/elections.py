@@ -63,12 +63,12 @@ def view_all_elections(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
     elections = DBSession.query(Election).all()
-    elections = {}
     result = {}
     for election in elections:
-        elections[election.name] = {'view_url'  : request.route_url('view_election', id=election.id.urn), \
-                                 'name': election.name \
-                                }
+        election_url = request.route_url('view_election',id=election.id.urn)
+        name = election.name
+        elections[election.name] = { 'view_url' : election_url, \
+                                     'name' : name }
     result['page_name'] = 'All Elections' 
     result['elections'] = elections
     return result
