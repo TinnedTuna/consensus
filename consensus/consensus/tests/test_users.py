@@ -36,37 +36,38 @@ class TestUsers(unittest.TestCase):
         DBSession.remove()
         testing.tearDown()
 
-    def test_user_signup(self):
-        request = testing.DummyRequest() 
+    def _get_request(self):
+        self.config.include('consensus.routes_setup')
+        request = testing.DummyRequest()
         request.POST = MultiDict()
+        return request
+
+    def test_user_signup(self):
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
         self.assertEqual(response.status_int, 200)
         
     def test_duplicate_user_signup(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
         self.assertEqual(response.status_int, 200)
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
         self.assertEqual(response.status_int, 400)
  
     def test_user_signup_and_auth(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
         self.assertEqual(response.status_int, 200)
-        request = testing.DummyRequest()
-        request.POST = MultiDict()
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
