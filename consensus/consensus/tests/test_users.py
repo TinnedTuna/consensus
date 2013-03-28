@@ -47,14 +47,14 @@ class TestUsers(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
         
     def test_duplicate_user_signup(self):
         request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
         request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
@@ -66,11 +66,11 @@ class TestUsers(unittest.TestCase):
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = signup(request)
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
         request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
         auth_token = request.session['authentication']
         self.assertTrue(auth_token.is_authenticated()) 
