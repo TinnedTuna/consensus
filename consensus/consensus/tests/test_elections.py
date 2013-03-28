@@ -89,53 +89,47 @@ class TestElection(unittest.TestCase):
 
    
     def test_view_elections(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+        request = self._get_request() 
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
         auth_session = request.session
         self.assertTrue(auth_session['authentication'].is_authenticated())
-        request = testing.DummyRequest() 
+        request = self._get_request()
         request.session = auth_session
-        request.POST = MultiDict()
         request.POST['name'] = 'Test'
         request.POST['body'] = 'An election for testing.'
         request.POST['method'] = 'TestMethod'
         response = create_election(request)
         self.assertEqual(response.status_int, 302)
-        request = testing.DummyRequest() 
+        request = self._get_request()
         request.session = auth_session
-        request.POST = MultiDict()
         response = view_all_elections(request)
-        self.assertEqual(len(response), 1)
+        print(response)
+        self.assertEqual(len(response['elections']), 1)
         self.assertEqual(response['Test']['name'], 'Test')
 
-    def test_view_elections(self):
-        request = testing.DummyRequest() 
-        request.POST = MultiDict()
+    def test_view_election(self):
+        request = self._get_request()
         request.POST['username'] = 'TestUser'
         request.POST['password'] = 'TestPass'
         response = auth(request)
         auth_session = request.session
         self.assertTrue(auth_session['authentication'].is_authenticated())
-        request = testing.DummyRequest() 
+        request = self._get_request()
         request.session = auth_session
-        request.POST = MultiDict()
         request.POST['name'] = 'Test'
         request.POST['body'] = 'An election for testing.'
         request.POST['method'] = 'TestMethod'
         response = create_election(request)
         self.assertEqual(response.status_int, 302)
-        request = testing.DummyRequest() 
+        requet = self._get_request()
         request.session = auth_session
-        request.POST = MultiDict()
         response = view_all_elections(request)
         self.assertEqual(len(response), 1)
         self.assertEqual(response['Test']['name'], 'Test')
-        request = testing.DummyRequest() 
+        self._get_request()
         request.session = auth_session
-        request.POST = MultiDict()
         request.matchdict['id'] = response['Test']['id']
         response = view_election(request)
         self.assertEqual(response['name'], 'Test')
