@@ -32,5 +32,5 @@ def routes_setup(config):
     config.add_route('create_electionp', '/create_election', request_method='POST')
     config.add_route('create_election', '/create_election', request_method='GET')
     config.add_route('view_all_elections','/elections')
-    config.add_route('view_election','/election/{id}')
+    config.add_route('view_election','/election/{election_id}', request_method='GET')
  

@@ -56,7 +56,7 @@ def create_election(request):
     election = Election(election_name, election_desc, read_method)
     with transaction.manager:
         new_id = DBSession.add(election)
-    return HTTPFound(location=request.route_url('view_election', id=new_id))
+    return HTTPFound(location=request.route_url('view_election', election_id=new_id))
         
 @view_config(route_name='view_all_elections', renderer='all_elections.mako')
 def view_all_elections(request):
@@ -65,9 +65,9 @@ def view_all_elections(request):
     elections = DBSession.query(Election).all()
     result = {}
     for election in elections:
-        election_url = request.route_url('view_election',id=election.id.urn)
+        election_url = request.route_url('view_election',election_id=election.id.urn)
         name = election.name
-        elections[election.name] = { 'view_url' : election_url, \
+        result[election.name] = { 'view_url' : election_url, \
                                      'name' : name }
     result['page_name'] = 'All Elections' 
     result['elections'] = elections
@@ -78,11 +78,14 @@ def view_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
     try:
-        election_id = uuid.UUID(request.matchdict['id'])
-    except KeyError, ValueError:
-        raise HTTPBadRequest()
-    
-    election = DBSession.query(Election).filter_by(id=election_id).first()
+        print(request.matchdict)
+        guid = uuid.UUID(request.matchdict['election_id'])
+        print(guid)
+    except KeyError:
+        return HTTPBadRequest()
+    print(guid)
+    election_id = guid
+    election = DBSession.query(Election).filter_by(id=guid).first()
     return { 'id' : election.id.urn, \
              'page_name' : election.name, \
              'name' : election.name, \

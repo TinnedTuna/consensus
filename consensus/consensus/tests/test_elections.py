@@ -105,7 +105,6 @@ class TestElection(unittest.TestCase):
         request = self._get_request()
         request.session = auth_session
         response = view_all_elections(request)
-        print(response)
         self.assertEqual(len(response['elections']), 1)
         self.assertEqual(response['Test']['name'], 'Test')
 
@@ -126,12 +125,15 @@ class TestElection(unittest.TestCase):
         requet = self._get_request()
         request.session = auth_session
         response = view_all_elections(request)
-        self.assertEqual(len(response), 1)
+        self.assertEqual(len(response), 3)
         self.assertEqual(response['Test']['name'], 'Test')
         self._get_request()
         request.session = auth_session
-        request.matchdict['id'] = response['Test']['id']
+        request.url = response['Test']['view_url']
+        print(request.url)
+        print(response['Test']['view_url'])
         response = view_election(request)
+        self.assertEqual(response.status_int, 200)
         self.assertEqual(response['name'], 'Test')
         self.assertEqual(response['body'], 'An election for testing.')
         self.assertEqual(response['method']['name'], 'Test Method')
