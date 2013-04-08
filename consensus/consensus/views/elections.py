@@ -78,12 +78,9 @@ def view_election(request):
     if (not is_authenticated(request)):
         return HTTPUnauthorized()
     try:
-        print(request.matchdict)
         guid = uuid.UUID(request.matchdict['election_id'])
-        print(guid)
     except KeyError:
         return HTTPBadRequest()
-    print(guid)
     election_id = guid
     election = DBSession.query(Election).filter_by(id=guid).first()
     return { 'id' : election.id.urn, \

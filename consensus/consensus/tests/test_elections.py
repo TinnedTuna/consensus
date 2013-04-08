@@ -130,10 +130,9 @@ class TestElection(unittest.TestCase):
         self._get_request()
         request.session = auth_session
         request.url = response['Test']['view_url']
-        print(request.url)
-        print(response['Test']['view_url'])
+        uuid = DBSession.query(Election).filter_by(name='Test').first().id.urn
+        request.matchdict['election_id'] = uuid
         response = view_election(request)
-        self.assertEqual(response.status_int, 200)
         self.assertEqual(response['name'], 'Test')
         self.assertEqual(response['body'], 'An election for testing.')
         self.assertEqual(response['method']['name'], 'Test Method')
