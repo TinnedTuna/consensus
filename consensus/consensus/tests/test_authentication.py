@@ -2,6 +2,8 @@ import unittest
 import transaction
 import uuid
 
+from bkrypt import Password
+
 from pyramid import testing
 
 from pyramid.httpexceptions import HTTPOk
@@ -35,7 +37,7 @@ class TestAuthentication(unittest.TestCase):
         DBSession.configure(bind=engine)
         Base.metadata.create_all(engine)
         with transaction.manager:
-            model = User('TestUser','TestPass','TestSalt')
+            model = User('TestUser',str(Password.create('TestPass')))
             role = Role('ROLE_USER', 'The default role for all users.')
             DBSession.add(role)
             model.roles.append(DBSession.query(Role).filter_by(alias='ROLE_USER').first())

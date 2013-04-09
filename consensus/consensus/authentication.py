@@ -1,4 +1,4 @@
-import bcryptor 
+from bkrypt import Password
 
 from consensus.models import (
     Role,
@@ -45,11 +45,11 @@ class AuthenticationStrategy():
         except KeyError:
             raise AuthenticationError()
 
-        hasher = bcryptor.Bcrypt()
         user = DBSession.query(User).filter_by(username=supplied_username).first()        
         if (user is None):
             raise AuthenticationError()
-        if (hasher.valid(password, user.password)):
+        p = Password(user.password)
+        if (p == password):
             return Authentication(user,user.roles)  
         else:
             raise AuthenticationError()

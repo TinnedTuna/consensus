@@ -2,6 +2,8 @@ import unittest
 import transaction
 import uuid
 
+from bkrypt import Password
+
 from pyramid import testing
 
 from pyramid.httpexceptions import HTTPOk
@@ -48,7 +50,7 @@ class TestElection(unittest.TestCase):
         Base.metadata.create_all(engine)
         with transaction.manager:
             ballot_method = Method('TestMethod','Test Method','A test balloting method')
-            model = User('TestUser','TestPass','TestSalt')
+            model = User('TestUser', str(Password.create('TestPass')))
             role = Role('ROLE_USER', 'The default role for all users.')
             DBSession.add(ballot_method)
             DBSession.add(role)

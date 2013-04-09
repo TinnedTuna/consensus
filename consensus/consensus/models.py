@@ -75,15 +75,13 @@ class User(Base):
     id = Column(UUID, primary_key = True, default=uuid.uuid4)
     username = Column(Text, unique=True)
     password = Column(Text)
-    salt = Column(Text)
  
     # Many to Many relationship to roles. 
     roles = relationship('Role', secondary='user_roles',  backref='users')
 
-    def __init__(self, username, password, salt):
+    def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.salt = salt
   
     def __eq__ (self, other):
         if (other is None):
