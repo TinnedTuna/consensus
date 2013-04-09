@@ -15,6 +15,8 @@ requires = [
     'pyramid_beaker',
     'zope.sqlalchemy',
     'waitress',
+    'bcryptor',
+    'yamlog', # Bcryptor-1.2.2 needs this but doesn't decalare it.
     ]
 
 setup(name='consensus',
