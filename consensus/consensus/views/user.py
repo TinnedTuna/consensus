@@ -1,5 +1,7 @@
 import transaction 
 
+import bcryptor
+
 from pyramid.response import Response
 
 from pyramid.view import view_config
@@ -56,7 +58,8 @@ def signup(request):
         password = request.POST.getone('password')
     except KeyError: 
         return HTTPBadRequest()
-    new_user = User(username,password,"salt")
+    hasher = bcryptor.Bcrypt()
+    new_user = User(username,hasher.create(password))
     role_user = DBSession.query(Role).filter_by(alias='ROLE_USER').first()
     try:
         with transaction.manager:
