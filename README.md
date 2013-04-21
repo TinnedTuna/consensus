@@ -36,7 +36,9 @@ whoever administers the consesus system.
 Getting Started
 ---------------
 
-- cd <directory containing this file>
+- virtualenv $venv
+
+- cd consensus/
 
 - $venv/bin/python setup.py develop
 
